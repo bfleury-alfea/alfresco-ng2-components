@@ -18,9 +18,8 @@
 import { AlfrescoApiService } from '@alfresco/adf-core';
 import { Injectable } from '@angular/core';
 import { Observable, from, forkJoin, of } from 'rxjs';
-import { FilterProcessRepresentationModel } from '../models/filter-process.model';
 import { map, catchError } from 'rxjs/operators';
-import { ResultListDataRepresentationUserProcessInstanceFilterRepresentation, UserFiltersApi } from '@alfresco/js-api';
+import { ResultListDataRepresentationUserProcessInstanceFilterRepresentation, UserFiltersApi, UserProcessInstanceFilterRepresentation } from '@alfresco/js-api';
 
 @Injectable({
     providedIn: 'root'
@@ -39,13 +38,13 @@ export class ProcessFilterService {
      * @param appId ID of the target app
      * @returns Array of filter details
      */
-    getProcessFilters(appId: number): Observable<FilterProcessRepresentationModel[]> {
+    getProcessFilters(appId: number): Observable<UserProcessInstanceFilterRepresentation[]> {
         return from(this.callApiProcessFilters(appId))
             .pipe(
                 map((response: any) => {
-                    const filters: FilterProcessRepresentationModel[] = [];
-                    response.data.forEach((filter: FilterProcessRepresentationModel) => {
-                        const filterModel = new FilterProcessRepresentationModel(filter);
+                    const filters: UserProcessInstanceFilterRepresentation[] = [];
+                    response.data.forEach((filter: UserProcessInstanceFilterRepresentation) => {
+                        const filterModel = new UserProcessInstanceFilterRepresentation(filter);
                         filters.push(filterModel);
                     });
                     return filters;
@@ -60,7 +59,7 @@ export class ProcessFilterService {
      * @param appId ID of the target app
      * @returns Details of the filter
      */
-    getProcessFilterById(filterId: number, appId?: number): Observable<FilterProcessRepresentationModel | null> {
+    getProcessFilterById(filterId: number, appId?: number): Observable<UserProcessInstanceFilterRepresentation | null> {
         return from(this.callApiProcessFilters(appId))
             .pipe(
                 map((response: any) => {
@@ -76,7 +75,7 @@ export class ProcessFilterService {
      * @param appId ID of the target app
      * @returns Details of the filter
      */
-    getProcessFilterByName(filterName: string, appId?: number): Observable<FilterProcessRepresentationModel | null> {
+    getProcessFilterByName(filterName: string, appId?: number): Observable<UserProcessInstanceFilterRepresentation | null> {
         return from(this.callApiProcessFilters(appId))
             .pipe(
                 map((response: any) => {
@@ -91,7 +90,7 @@ export class ProcessFilterService {
      * @param appId ID of the target app
      * @returns Default filters just created
      */
-    createDefaultFilters(appId: number): Observable<FilterProcessRepresentationModel[]> {
+    createDefaultFilters(appId: number): Observable<UserProcessInstanceFilterRepresentation[]> {
         const runningFilter = this.getRunningFilterInstance(appId);
         const completedFilter = this.getCompletedFilterInstance(appId);
         const allFilter = this.getAllFilterInstance(appId);
@@ -103,7 +102,7 @@ export class ProcessFilterService {
         )
         .pipe(
             map(entries => {
-                const result: FilterProcessRepresentationModel[] = [];
+                const result: UserProcessInstanceFilterRepresentation[] = [];
 
                 entries
                     .filter(entry => entry)
@@ -131,8 +130,8 @@ export class ProcessFilterService {
      * @param appId ID of the target app
      * @returns Filter just created
      */
-    getRunningFilterInstance(appId: number): FilterProcessRepresentationModel {
-        return new FilterProcessRepresentationModel({
+    getRunningFilterInstance(appId: number): UserProcessInstanceFilterRepresentation {
+        return new UserProcessInstanceFilterRepresentation({
             'name': 'Running',
             'appId': appId,
             'recent': true,
@@ -146,8 +145,8 @@ export class ProcessFilterService {
      * @param appId ID of the target app
      * @returns Details of the filter
      */
-    private getCompletedFilterInstance(appId: number): FilterProcessRepresentationModel {
-        return new FilterProcessRepresentationModel({
+    private getCompletedFilterInstance(appId: number): UserProcessInstanceFilterRepresentation {
+        return new UserProcessInstanceFilterRepresentation({
             'name': 'Completed',
             'appId': appId,
             'recent': false,
@@ -161,8 +160,8 @@ export class ProcessFilterService {
      * @param appId ID of the target app
      * @returns Details of the filter
      */
-    private getAllFilterInstance(appId: number): FilterProcessRepresentationModel {
-        return new FilterProcessRepresentationModel({
+    private getAllFilterInstance(appId: number): UserProcessInstanceFilterRepresentation {
+        return new UserProcessInstanceFilterRepresentation({
             'name': 'All',
             'appId': appId,
             'recent': true,
@@ -176,7 +175,7 @@ export class ProcessFilterService {
      * @param filter The filter to add
      * @returns The filter just added
      */
-    addProcessFilter(filter: FilterProcessRepresentationModel): Observable<FilterProcessRepresentationModel | null> {
+    addProcessFilter(filter: UserProcessInstanceFilterRepresentation): Observable<UserProcessInstanceFilterRepresentation | null> {
         return from(this.userFiltersApi.createUserProcessInstanceFilter(filter))
             .pipe(catchError(() => of(null)));
     }
