@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { LoginSSOPage, SettingsPage, LoginPage, BrowserVisibility } from '@alfresco/adf-testing';
+import { LoginSSOPage, SettingsPage, LoginPage, BrowserVisibility, BrowserActions } from '@alfresco/adf-testing';
 import { browser } from 'protractor';
 import { NavigationBarPage } from '../../../pages/adf/navigation-bar.page';
 
@@ -33,8 +33,8 @@ describe('Login component - SSO', () => {
 
         afterEach(async () => {
             await navigationBarPage.clickLogoutButton();
-            await browser.executeScript('window.sessionStorage.clear();');
-            await browser.executeScript('window.localStorage.clear();');
+            await BrowserActions.clearSessionStorage();
+            await BrowserActions.clearLocalStorage();
             await browser.refresh();
         });
 

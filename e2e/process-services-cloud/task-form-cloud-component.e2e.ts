@@ -27,7 +27,8 @@ import {
     StringUtil,
     TaskFormCloudComponent,
     TaskHeaderCloudPage,
-    TasksService
+    TasksService,
+    BrowserActions
 } from '@alfresco/adf-testing';
 import { NavigationBarPage } from '../pages/adf/navigation-bar.page';
 import { TasksCloudDemoPage } from '../pages/adf/demo-shell/process-services/tasks-cloud-demo.page';
@@ -113,8 +114,8 @@ describe('Task form cloud component', () => {
     });
 
     afterAll(async () => {
-        await browser.executeScript('window.sessionStorage.clear();');
-        await browser.executeScript('window.localStorage.clear();');
+        await BrowserActions.clearSessionStorage();
+        await BrowserActions.clearLocalStorage();
     });
 
     it('[C310366] Should refresh buttons and form after an action is complete', async () => {
